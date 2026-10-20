@@ -65,7 +65,7 @@ def himalayas():
         for item in items:
             loc = item.get("locationRestrictions") or []
             tz = item.get("timezoneRestrictions") or []
-            countries = [str(x.get("code") or x.get("name") or "") if isinstance(x, dict) else str(x) for x in loc]
+            countries = [str(x.get("alpha2") or x.get("code") or x.get("name") or "") if isinstance(x, dict) else str(x) for x in loc]
             country_ok = not countries or any(c.lower() in ("ng", "nigeria") for c in countries)
             # Nigeria is on UTC+01:00 year-round. Unknown formats are excluded rather than falsely cleared.
             timezone_ok = not tz or any(str(x).strip().lower() in

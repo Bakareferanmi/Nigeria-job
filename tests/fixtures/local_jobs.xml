@@ -1,0 +1,7 @@
+<?xml version="1.0"?><rss><channel>
+<item><position>Junior Front-End Developer</position><company>Example</company><location>Lagos</location><link>https://www.myjobmag.com/job/fixture-frontend</link><description><![CDATA[Job type: On-site. 1 years experience. How to apply: Send your CV to careers@example.test]]></description><pubDate>Wed, 21 Oct 2026 07:00:00 GMT</pubDate></item>
+<item><position>Data Science Intern</position><company>Example</company><location>Abuja</location><link>https://www.myjobmag.com/job/fixture-data</link><description>Work arrangement: Hybrid. Python required.</description></item>
+<item><position>Junior Backend Engineer</position><company>Example</company><location>Nigeria</location><link>https://www.myjobmag.com/job/fixture-remote</link><description>Fully remote.</description></item>
+<item><position>Software Engineer</position><company>Example</company><location>Lagos</location><link>https://www.myjobmag.com/job/fixture-unknown</link><description>Collaborate with our remote team. SQL.</description></item>
+<item><position>Full-Stack Intern</position><company>Example</company><location>Lagos</location><link>https://www.myjobmag.com/job/fixture-expired</link><expiryDate>2000-01-01</expiryDate><description>Internship</description></item>
+</channel></rss>

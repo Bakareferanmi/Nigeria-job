@@ -14,6 +14,8 @@ PROFILE = {
         "Networking",
         "Telecommunications",
         "Frontend Engineering",
+        "Backend Engineering",
+        "Full Stack Engineering",
         "Software Engineering",
         "Product Management",
         "Business Analysis",

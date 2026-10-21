@@ -1,6 +1,6 @@
 # JobHunter: Nigeria + remote jobs
 
-Python CLI for discovering and tracking engineering, data, supply chain, IT, networking, telecoms, software, product, and operations opportunities.
+Browser dashboard and Python CLI for discovering and tracking engineering, data, supply chain, IT, networking, telecoms, software, product, and operations opportunities.
 
 ## Termux quick start
 
@@ -55,3 +55,46 @@ Search results are stored locally in `data/jobs.sqlite3`; previous application s
 - Update `profile.py` to reflect skills you can demonstrate.
 
 Documentation: [Himalayas](https://himalayas.app/api), [Jobicy](https://github.com/Jobicy/remote-jobs-api), [Remotive](https://remotive.com/remote-jobs/api), [Greenhouse](https://developers.greenhouse.io/job-board.html), [Lever](https://github.com/lever/postings-api).
+
+
+## Web application
+
+The `web/` folder adds a responsive browser dashboard while preserving the Python CLI.
+
+- Search live remote sources with profile-based matching, Nigeria eligibility checks, and visible source failures.
+- Filter by keyword, career track and Nigeria/Lagos/Remote; sort by match, date or company.
+- Shortlist jobs, track applications and interviews, save notes, and add manually discovered vacancies.
+- Download CSV reports and JSON backups; restore merges missing jobs without overwriting existing records.
+- Tracking is saved **only in this browser on this device**. Clearing site data removes it; JSON backups transfer it between devices. The web tracker and CLI SQLite database do not synchronize.
+- Local employer feeds remain empty until verified ATS board tokens are added. Local board links are search pages, not verified vacancies.
+
+### Run locally (Node.js 22+)
+
+```bash
+node web/build.mjs
+node web/dev.mjs
+```
+
+Open http://localhost:4173. No npm install is required for building or running locally.
+
+### Checks
+
+```bash
+node --test web/tests/*.test.mjs
+```
+
+### Deploy on your own Cloudflare account
+
+```bash
+cd web
+node build.mjs
+npx wrangler deploy
+```
+
+Wrangler uses `web/wrangler.jsonc`. The app needs no API keys or database bindings. Restrict access with Cloudflare Access if you want a private deployment. The ChatGPT-hosted edition is private to its owner.
+
+### Update matching settings
+
+Edit `web/config.json` to change career-track keywords, demonstrable skills, or verified Greenhouse/Lever board tokens. This is the web deployment's configuration snapshot; changes to Python `profile.py` or root `boards.json` are not automatically synchronized. Rebuild and redeploy after changes.
+
+The web runtime implements the CLI's matching approach in JavaScript for Cloudflare Workers. Results are fetched server-side with 12-second per-source timeouts and an approximately five-minute in-memory cache per isolate. Cached feed availability can vary. Listings are not guaranteed to remain open, and remote eligibility still requires checking the original employer listing. Public sources can rate-limit or fail; stored tracking data is retained.

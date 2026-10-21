@@ -1,0 +1,123 @@
+{
+  "tracks": {
+    "Electrical Engineering": [
+      "electrical",
+      "maintenance engineer",
+      "field engineer",
+      "solar engineer",
+      "power engineer"
+    ],
+    "Data Analysis": [
+      "data analyst",
+      "reporting analyst",
+      "analytics analyst",
+      "business intelligence",
+      "bi analyst",
+      "mis analyst"
+    ],
+    "Data Science": [
+      "data scientist",
+      "data science",
+      "machine learning",
+      "ml engineer"
+    ],
+    "Supply Chain": [
+      "supply chain",
+      "procurement",
+      "logistics",
+      "inventory",
+      "warehouse",
+      "purchasing",
+      "sourcing",
+      "demand planning"
+    ],
+    "IT Support": [
+      "it support",
+      "technical support",
+      "helpdesk",
+      "help desk",
+      "service desk",
+      "it technician",
+      "desktop support"
+    ],
+    "Networking": [
+      "network engineer",
+      "network support",
+      "network technician",
+      "noc analyst",
+      "noc engineer",
+      "network operations"
+    ],
+    "Telecommunications": [
+      "telecom",
+      "telecommunications",
+      "rf engineer",
+      "transmission engineer",
+      "fiber optic",
+      "fibre optic",
+      "noc engineer"
+    ],
+    "Frontend Engineering": [
+      "frontend",
+      "front end",
+      "react developer",
+      "web developer",
+      "javascript developer"
+    ],
+    "Software Engineering": [
+      "software engineer",
+      "software developer",
+      "full stack",
+      "fullstack",
+      "backend",
+      "python developer",
+      "web developer",
+      "qa engineer",
+      "software tester"
+    ],
+    "Product Management": [
+      "product analyst",
+      "product associate",
+      "associate product manager",
+      "product management",
+      "product operations"
+    ],
+    "Business Analysis": [
+      "business analyst",
+      "business intelligence",
+      "business operations analyst",
+      "process analyst"
+    ],
+    "Operations": [
+      "operations analyst",
+      "operations associate",
+      "operations assistant",
+      "operations coordinator",
+      "business operations"
+    ]
+  },
+  "skills": [
+    "Python",
+    "SQL",
+    "Excel",
+    "Data Analysis",
+    "Pandas",
+    "Matplotlib",
+    "JavaScript",
+    "HTML",
+    "CSS",
+    "React",
+    "Frontend Development",
+    "Web Development",
+    "Git",
+    "IT Support",
+    "Computer Networking",
+    "Technical Support",
+    "Digital Marketing",
+    "Copywriting"
+  ],
+  "boards": {
+    "greenhouse": [],
+    "lever": []
+  }
+}

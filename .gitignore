@@ -8,3 +8,7 @@ data/
 *.db
 jobhunter_export.csv
 .pytest_cache/
+
+node_modules/
+.wrangler/
+.dev.vars*

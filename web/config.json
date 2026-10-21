@@ -1,0 +1,194 @@
+{
+  "tracks": {
+    "Electrical Engineering": [
+      "electrical",
+      "maintenance engineer",
+      "field engineer",
+      "solar engineer",
+      "power engineer"
+    ],
+    "Data Analysis": [
+      "data analyst",
+      "reporting analyst",
+      "analytics analyst",
+      "business intelligence",
+      "bi analyst",
+      "mis analyst"
+    ],
+    "Data Science": [
+      "data scientist",
+      "data science",
+      "machine learning",
+      "ml engineer"
+    ],
+    "Supply Chain": [
+      "supply chain",
+      "procurement",
+      "logistics",
+      "inventory",
+      "warehouse",
+      "purchasing",
+      "sourcing",
+      "demand planning"
+    ],
+    "IT Support": [
+      "it support",
+      "technical support",
+      "helpdesk",
+      "help desk",
+      "service desk",
+      "it technician",
+      "desktop support"
+    ],
+    "Networking": [
+      "network engineer",
+      "network support",
+      "network technician",
+      "noc analyst",
+      "noc engineer",
+      "network operations"
+    ],
+    "Telecommunications": [
+      "telecom",
+      "telecommunications",
+      "rf engineer",
+      "transmission engineer",
+      "fiber optic",
+      "fibre optic",
+      "noc engineer"
+    ],
+    "Frontend Engineering": [
+      "frontend",
+      "front end",
+      "front-end",
+      "react developer",
+      "react engineer",
+      "web developer",
+      "javascript developer"
+    ],
+    "Backend Engineering": [
+      "backend",
+      "back end",
+      "back-end",
+      "node.js developer",
+      "nodejs developer",
+      "python developer",
+      "java developer",
+      "php developer",
+      "django developer"
+    ],
+    "Full Stack Engineering": [
+      "full stack",
+      "fullstack",
+      "full-stack"
+    ],
+    "Software Engineering": [
+      "software engineer",
+      "software developer",
+      "full stack",
+      "fullstack",
+      "full-stack",
+      "backend",
+      "back-end",
+      "back end",
+      "python developer",
+      "web developer",
+      "qa engineer",
+      "software tester"
+    ],
+    "Product Management": [
+      "product analyst",
+      "product associate",
+      "associate product manager",
+      "product management",
+      "product operations"
+    ],
+    "Business Analysis": [
+      "business analyst",
+      "business intelligence",
+      "business operations analyst",
+      "process analyst"
+    ],
+    "Operations": [
+      "operations analyst",
+      "operations associate",
+      "operations assistant",
+      "operations coordinator",
+      "business operations"
+    ]
+  },
+  "skills": [
+    "Python",
+    "SQL",
+    "Excel",
+    "Data Analysis",
+    "Pandas",
+    "Matplotlib",
+    "JavaScript",
+    "HTML",
+    "CSS",
+    "React",
+    "Frontend Development",
+    "Web Development",
+    "Git",
+    "IT Support",
+    "Computer Networking",
+    "Technical Support",
+    "Digital Marketing",
+    "Copywriting"
+  ],
+  "boards": {
+    "greenhouse": [
+      "moniepoint"
+    ],
+    "lever": [
+      "Yassir"
+    ]
+  },
+  "nigeriaTerms": [
+    "nigeria",
+    "lagos",
+    "abuja",
+    "ibadan",
+    "ogun",
+    "ikeja",
+    "lekki",
+    "port harcourt",
+    "enugu",
+    "abia",
+    "adamawa",
+    "akwa ibom",
+    "anambra",
+    "bauchi",
+    "bayelsa",
+    "benue",
+    "borno",
+    "cross river",
+    "delta",
+    "ebonyi",
+    "edo",
+    "ekiti",
+    "gombe",
+    "imo",
+    "jigawa",
+    "kaduna",
+    "kano",
+    "katsina",
+    "kebbi",
+    "kogi",
+    "kwara",
+    "nasarawa",
+    "nassarawa",
+    "niger state",
+    "ondo",
+    "osun",
+    "oyo",
+    "plateau",
+    "rivers",
+    "sokoto",
+    "taraba",
+    "yobe",
+    "zamfara",
+    "fct"
+  ]
+}

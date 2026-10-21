@@ -80,4 +80,70 @@ Existing SQLite databases receive additive columns for descriptions, levels, arr
 
 ## Project preferences
 
-See `PROJECT_NOTES.md` for the approved webapp direction and the current CLI priorities. The CLI configuration changes in this update do not alter the separately hosted webapp.
+See `PROJECT_NOTES.md` for the approved webapp direction and the current CLI priorities. The website now includes matching local-job, career-level, work-arrangement, and public application-email features.
+
+
+## Web application
+
+The `web/` folder adds a responsive browser dashboard while preserving the Python CLI. The approved green-and-cream design is retained.
+
+- Search MyJobMag, Moniepoint and Yassir local/employer feeds alongside Himalayas, Jobicy and Remotive, with profile-based matching, Nigeria eligibility checks and visible source failures.
+- Filter by keyword, career track, career level, work arrangement and Nigeria/Lagos/Remote; sort by match, date or company.
+- Open a job and click **Check listing for email** to fetch published application contacts with source evidence. Only supported public job-board hosts are fetched, redirects are checked, and title/company mismatches block contact attachment. Some listings provide only application forms.
+- Shortlist jobs, track applications and interviews, save notes, and add manually discovered vacancies.
+- Download CSV reports and JSON backups; restore merges missing jobs without overwriting existing records.
+- Tracking is saved **only in this browser on this device**. Clearing site data removes it; JSON backups transfer it between devices. The web tracker and CLI SQLite database do not synchronize.
+- MyJobMag covers its latest 100 entries across all fields. Employer feeds vary. Additional local-board links remain search pages, not verified vacancies.
+
+### Run locally (Node.js 22+)
+
+```bash
+node web/build.mjs
+node web/dev.mjs
+```
+
+Open http://localhost:4173. No npm install is required for building or running locally.
+
+### Checks
+
+```bash
+node --test web/tests/*.test.mjs
+```
+
+### Deploy on your own Cloudflare account
+
+```bash
+cd web
+node build.mjs
+npx wrangler deploy
+```
+
+Wrangler uses `web/wrangler.jsonc`. The app needs no API keys or database bindings. Restrict access with Cloudflare Access if you want a private deployment. The ChatGPT-hosted edition is private to its owner.
+
+### Update matching settings
+
+Edit `web/config.json` to change career-track keywords, demonstrable skills, or verified Greenhouse/Lever board tokens. This is the web deployment's configuration snapshot; changes to Python `profile.py` or root `boards.json` are not automatically synchronized. Rebuild and redeploy after changes.
+
+The web runtime implements the CLI's matching approach in JavaScript for Cloudflare Workers. Results are fetched server-side with 12-second per-source timeouts and an approximately five-minute in-memory cache per isolate. Cached feed availability can vary. Listings are not guaranteed to remain open, and remote eligibility still requires checking the original employer listing. Public sources can rate-limit or fail; stored tracking data is retained.
+
+
+### Host the website from GitHub on Cloudflare Workers
+
+Use **Workers**, since live jobs and contact lookup require server-side code. This is not a static-only Pages or Netlify upload.
+
+Connect `Bakareferanmi/Nigeria-job` in Cloudflare Workers & Pages, choose **Create application → Import a repository**, and use:
+
+| Setting | Value |
+| --- | --- |
+| Production branch | `main` |
+| Root directory | `web` |
+| Build command | `node build.mjs` |
+| Deploy command | `npx wrangler deploy` |
+| Wrangler configuration | `web/wrangler.jsonc` |
+| API keys / database bindings | None required |
+
+Cloudflare may ask you to choose a unique Worker name; change `name` in `web/wrangler.jsonc` if needed. For command-line deployment, open a terminal in `web`, run `node build.mjs`, then `npx wrangler deploy` and complete Cloudflare's sign-in flow.
+
+Source: [Cloudflare Workers Builds configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/).
+
+The independently hosted version uses the access rules you configure in your Cloudflare account. Tracking stays in each visitor's browser; it does not sync across devices or with the Python SQLite database. Use JSON backups to move website tracking data. The website's API reads public job listings and does not send applications or emails.

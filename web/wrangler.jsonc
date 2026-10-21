@@ -1,0 +1,6 @@
+{
+  "name": "nigeria-jobhunter",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "build": {"command": "node build.mjs"}
+}

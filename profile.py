@@ -6,6 +6,9 @@ PROFILE = {
     ],
 
     "career_tracks": [
+        "Website Administration",
+        "Product Support",
+        "EdTech Support",
         "Electrical Engineering",
         "Data Analysis",
         "Data Science",

@@ -1,5 +1,49 @@
 {
   "tracks": {
+    "Website Administration": [
+      "website administrator",
+      "web administrator",
+      "webmaster",
+      "website officer",
+      "web content officer",
+      "web content administrator",
+      "cms administrator",
+      "cms assistant",
+      "wordpress administrator",
+      "website support",
+      "web content specialist",
+      "web content assistant",
+      "wordpress specialist",
+      "website coordinator"
+    ],
+    "Product Support": [
+      "product support",
+      "software support",
+      "application support",
+      "platform support",
+      "saas support",
+      "technical customer support",
+      "customer technical support"
+    ],
+    "EdTech Support": [
+      "edtech support",
+      "educational technology",
+      "education technology",
+      "e-learning support",
+      "elearning support",
+      "e-learning administrator",
+      "lms administrator",
+      "lms support",
+      "learning management system",
+      "school ict",
+      "school it support",
+      "cbt support",
+      "digital learning support",
+      "learning technologist",
+      "learning platform administrator",
+      "learning platform support",
+      "lms assistant"
+    ],
     "Electrical Engineering": [
       "electrical",
       "maintenance engineer",
@@ -190,5 +234,88 @@
     "yobe",
     "zamfara",
     "fct"
-  ]
+  ],
+  "industries": {
+    "Education & EdTech": [
+      "edtech",
+      "education / teaching",
+      "educational technology",
+      "educational services",
+      "school",
+      "university",
+      "e-learning",
+      "elearning",
+      "learning management system",
+      "digital learning",
+      "student management"
+    ],
+    "Healthcare & HealthTech": [
+      "healthcare",
+      "healthtech",
+      "hospital",
+      "clinic",
+      "medical",
+      "patient management",
+      "electronic health record"
+    ],
+    "Logistics & Supply Chain": [
+      "logistics",
+      "warehousing",
+      "warehouse",
+      "freight",
+      "fleet management",
+      "supply chain",
+      "transportation",
+      "ride-hailing"
+    ],
+    "Manufacturing & Industrial Services": [
+      "manufacturing",
+      "industrial automation",
+      "factory",
+      "industrial services",
+      "production plant",
+      "equipment maintenance"
+    ],
+    "Energy & Utilities": [
+      "solar",
+      "renewable energy",
+      "utilities",
+      "electricity",
+      "power distribution",
+      "energy management",
+      "metering"
+    ],
+    "Agriculture & Food Processing": [
+      "agriculture",
+      "agribusiness",
+      "agritech",
+      "food processing",
+      "agro-allied",
+      "farming",
+      "food production"
+    ],
+    "Property & Facilities": [
+      "property management",
+      "facilities management",
+      "facility management",
+      "real estate",
+      "proptech",
+      "building services"
+    ],
+    "Insurance & Pensions": [
+      "insurance",
+      "insurtech",
+      "pension",
+      "pensions",
+      "underwriting"
+    ],
+    "Nonprofit & Development": [
+      "nonprofit",
+      "non-profit",
+      "ngo",
+      "humanitarian",
+      "international development",
+      "development organization"
+    ]
+  }
 }

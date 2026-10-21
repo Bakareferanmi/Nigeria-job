@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {match,normalize,collect,makeWorker,parseLocalFeed,lookupContacts,extractContacts,careerLevel,validateContactUrl} from '../server.mjs';
+import {match,normalize,collect,makeWorker,parseLocalFeed,lookupContacts,extractContacts,careerLevel,validateContactUrl,industryTags} from '../server.mjs';
 const config=JSON.parse(await readFile(new URL('../config.json',import.meta.url)));
 const job=normalize({title:'Junior Data Analyst',company:'Example',url:'https://example.com/jobs/1',location:'Lagos, Nigeria',description:'Python SQL Excel. 1 years experience',remote:false,eligibility:'yes'});
 test('matches junior roles and profile skills, excludes senior and foreign local jobs',()=>{
@@ -48,4 +48,12 @@ test('contact lookup blocks unsupported hosts and redirects and rejects identity
 test('contact API validates input, config exposes new roles and filters',async()=>{
  const worker=makeWorker('Page',config);assert.equal((await worker.fetch(new Request('https://example.com/api/contacts'))).status,400);
  const d=await(await worker.fetch(new Request('https://example.com/api/config'))).json();assert.ok(d.tracks.includes('Backend Engineering'));assert.ok(d.tracks.includes('Full Stack Engineering'));assert.ok(d.levels.includes('Associate'));assert.ok(d.workModes.includes('On-site'));
+});
+
+test('new support tracks and industry clues work without confusing benefits or loan LMS roles',async()=>{
+ for(const [title,track] of [['Junior Website Administrator','Website Administration'],['Product Support Associate','Product Support'],['EdTech Support Assistant','EdTech Support']])assert.ok(match(normalize({...job,title}),config).tracks.includes(track));
+ assert.ok(industryTags({...job,title:'Website Administrator',description:'We operate a clinic.'},config).includes('Healthcare & HealthTech'));
+ assert.deepEqual(industryTags({...job,title:'Product Support',description:'Benefits: health insurance and pension scheme. University degree.'},config),[]);
+ assert.ok(!match(normalize({...job,title:'LMS Support Associate',description:'Support our loan management platform'}),config));
+ const w=makeWorker('Page',config),d=await(await w.fetch(new Request('https://example.com/api/config'))).json();assert.equal(Object.keys(d.industries).length,9);assert.ok(d.tracks.includes('Product Support'));
 });

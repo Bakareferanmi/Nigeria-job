@@ -129,5 +129,26 @@ class LocalJobsAndContactsTests(unittest.TestCase):
             self.assertIsInstance(matches[0]['id'],int)
             self.assertEqual(matches[0]['status'],'new')
 
+class SupportTracksAndIndustriesTests(unittest.TestCase):
+    def test_three_support_tracks_and_lms_ambiguity(self):
+        for title,track in [('Junior Website Administrator','Website Administration'),('CMS Assistant','Website Administration'),('Product Support Associate','Product Support'),('Software Support Intern','Product Support'),('EdTech Support Assistant','EdTech Support'),('Learning Platform Administrator','EdTech Support')]:
+            self.assertIn(track,hunter.role_tracks({'title':title},'All'))
+        self.assertNotIn('EdTech Support',hunter.role_tracks({'title':'LMS Support Associate','description':'Support our loan management platform'},'All'))
+
+    def test_industry_clues_and_benefits_not_confused_with_sector(self):
+        self.assertIn('Healthcare & HealthTech',hunter.industry_tags({'title':'Website Administrator','description':'Maintain our clinic website'}))
+        self.assertIn('Manufacturing & Industrial Services',hunter.industry_tags({'industry':'Manufacturing','title':'Product Support','description':''}))
+        self.assertEqual(hunter.industry_tags({'title':'Product Support Associate','description':'Benefits: health insurance, pension scheme. University degree required.'}),[])
+
+    def test_search_applies_industry_filter_and_persists_clues(self):
+        job=hunter.make_job('Junior Website Administrator','Example','https://example.test/job','Test','Lagos','Maintain clinic websites.')
+        with tempfile.TemporaryDirectory() as root,patch.object(hunter,'DB',Path(root)/'jobs.sqlite3'),patch.object(hunter,'myjobmag',return_value=[job]),patch.object(hunter,'boards',return_value={'greenhouse':[],'lever':[]}):
+            jobs,errors=hunter.search('Nigeria','Website Administration',industry='Healthcare & HealthTech')
+            self.assertEqual(len(jobs),1);self.assertFalse(errors)
+            self.assertIn('Healthcare & HealthTech',hunter.saved()[0]['industry_tags'])
+            jobs,_=hunter.search('Nigeria','Website Administration',industry='Energy & Utilities')
+            self.assertEqual(jobs,[])
+        self.assertIn('healthcare',hunter.discovery('Website Administration','Healthcare & HealthTech')[0][1])
+
 if __name__ == "__main__":
     unittest.main()

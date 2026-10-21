@@ -21,6 +21,10 @@ DB = Path(os.getenv("JOBHUNTER_DB", str(ROOT / "data" / "jobs.sqlite3")))
 HTTP = requests.Session()
 HTTP.headers.update({"User-Agent": "NigeriaJobHunter/1.0 (personal-use)", "Accept": "application/json"})
 TRACK_WORDS = {
+    'Website Administration': ['website administrator', 'web administrator', 'webmaster', 'website officer', 'web content officer', 'web content administrator', 'cms administrator', 'cms assistant', 'wordpress administrator', 'website support', 'web content specialist', 'web content assistant', 'wordpress specialist', 'website coordinator'],
+    'Product Support': ['product support', 'software support', 'application support', 'platform support', 'saas support', 'technical customer support', 'customer technical support'],
+    'EdTech Support': ['edtech support', 'educational technology', 'education technology', 'e-learning support', 'elearning support', 'e-learning administrator', 'lms administrator', 'lms support', 'learning management system', 'school ict', 'school it support', 'cbt support', 'digital learning support', 'learning technologist', 'learning platform administrator', 'learning platform support', 'lms assistant'],
+
     "Electrical Engineering": ["electrical", "maintenance engineer", "field engineer", "solar engineer", "power engineer"],
     "Data Analysis": ["data analyst", "reporting analyst", "analytics analyst", "business intelligence", "bi analyst", "mis analyst"],
     "Data Science": ["data scientist", "data science", "machine learning", "ml engineer"],
@@ -46,6 +50,8 @@ NG_TERMS = ("nigeria", "lagos", "abuja", "ibadan", "ogun", "ikeja", "lekki", "po
             "sokoto", "taraba", "yobe", "zamfara", "fct")
 LEVELS = ("Early career", "Junior", "Associate", "Internship", "Graduate", "Unspecified", "All")
 WORK_MODES = ("All", "On-site", "Hybrid", "Remote", "Unspecified")
+INDUSTRY_WORDS = json.loads((ROOT / "industry_focus.json").read_text(encoding="utf-8"))
+INDUSTRIES = ("All", *INDUSTRY_WORDS)
 LOCAL_FEED = "https://www.myjobmag.com/feeds/ng/jobsxml_by_categories.xml"
 
 
@@ -111,6 +117,8 @@ def parse_local_feed(content):
         job = make_job(title, company, field("link"), "MyJobMag", field("location"),
                        description, field("pubDate"), mode == "Remote", "yes")
         if job:
+            job["industry"] = clean(field("industry"))
+            job["industry_tags"] = industry_tags(job)
             job["work_mode"] = mode
             output.append(job)
     return output
@@ -131,7 +139,7 @@ def read_json(url, params=None):
     response.raise_for_status()
     return response.json()
 
-def make_job(title, company, url, source, location="", description="", published="", remote=False, eligibility="unknown", salary="", level=""):
+def make_job(title, company, url, source, location="", description="", published="", remote=False, eligibility="unknown", salary="", level="", industry=""):
     if not title or not str(url or "").startswith("https://"):
         return None
     return {
@@ -140,6 +148,7 @@ def make_job(title, company, url, source, location="", description="", published
         "description": clean(description)[:7000], "published": str(published or ""),
         "remote": bool(remote), "eligibility": eligibility, "salary": clean(salary), "level": clean(level),
         "work_mode": "Remote" if remote else work_mode(location),
+        "industry": clean(industry),
         "contacts": extract_contacts(description, str(url))
     }
 
@@ -237,7 +246,18 @@ def lever(token):
 def role_tracks(job, selected):
     title = job["title"].lower()
     choices = TRACK_WORDS if selected == "All" else {selected: TRACK_WORDS.get(selected, [])}
-    return [name for name, words in choices.items() if any(word in title for word in words)]
+    return [name for name, words in choices.items() if any(word in title for word in words)
+            and not (name == "EdTech Support" and "loan management" in
+                     (title + " " + job.get("description", "")).lower()
+                     and not re.search(r"education|learning management|school", title, re.I))]
+
+
+def industry_tags(job):
+    """Keyword clues, not a verified employer classification; sectors may overlap."""
+    body = re.sub(r"health insurance|medical insurance|life insurance|pension contributions|pension scheme|university degree|high school|secondary school", " ", job.get("description", "")[:1800], flags=re.I)
+    text = clean(" ".join(str(job.get(key, "")) for key in ("industry", "title", "company")) + " " + body).lower()
+    return [name for name, words in INDUSTRY_WORDS.items()
+            if any(re.search(r"(?<!\w)" + re.escape(word) + r"(?!\w)", text) for word in words)]
 
 def score(job, tracks):
     title = job["title"]
@@ -273,7 +293,7 @@ def connect_db():
       last_seen TEXT, status TEXT NOT NULL DEFAULT 'new')""")
     existing = {row[1] for row in connection.execute("PRAGMA table_info(jobs)")}
     for name, definition in (("description", "TEXT NOT NULL DEFAULT ''"), ("level", "TEXT NOT NULL DEFAULT ''"),
-                             ("work_mode", "TEXT NOT NULL DEFAULT 'Unspecified'"), ("contacts", "TEXT NOT NULL DEFAULT '[]'")):
+                             ("work_mode", "TEXT NOT NULL DEFAULT 'Unspecified'"), ("contacts", "TEXT NOT NULL DEFAULT '[]'"), ("industry", "TEXT NOT NULL DEFAULT ''"), ("industry_tags", "TEXT NOT NULL DEFAULT '[]'")):
         if name not in existing: connection.execute(f"ALTER TABLE jobs ADD COLUMN {name} {definition}")
     connection.commit()
     return connection
@@ -297,11 +317,14 @@ def save_jobs(jobs):
              timestamp,timestamp))
             connection.execute("UPDATE jobs SET description=?,level=?,work_mode=? WHERE url=?",
                                (job.get("description", ""), career_level(job), job.get("work_mode", "Unspecified"), job["url"]))
+            connection.execute("UPDATE jobs SET industry=?,industry_tags=? WHERE url=?",
+                               (job.get("industry", ""), json.dumps(industry_tags(job)), job["url"]))
             # Preserve previously fetched contacts when the feed contains no application section.
             if job.get("contacts"):
                 connection.execute("UPDATE jobs SET contacts=? WHERE url=?", (json.dumps(job["contacts"]), job["url"]))
 
-def search(region="Nigeria + Remote", track="All", level="Early career", mode="All"):
+def search(region="Nigeria + Remote", track="All", level="Early career", mode="All", industry="All"):
+    if industry not in INDUSTRIES: raise ValueError("Invalid industry filter")
     if level not in LEVELS or mode not in WORK_MODES: raise ValueError("Invalid search filter")
     sources = [("MyJobMag", myjobmag)] if region != "Remote" else []
     if region in ("Remote", "Nigeria + Remote"):
@@ -330,6 +353,8 @@ def search(region="Nigeria + Remote", track="All", level="Early career", mode="A
         if not location_ok(job, region): continue
         if not level_ok(job, level): continue
         if mode != "All" and job.get("work_mode", "Unspecified") != mode: continue
+        job["industry_tags"] = industry_tags(job)
+        if industry != "All" and industry not in job["industry_tags"]: continue
         tracks = role_tracks(job, track)
         if not tracks: continue
         job["tracks"] = tracks
@@ -374,11 +399,12 @@ def export_csv(filename):
         writer.writerows(rows)
     return filename
 
-def discovery(track):
+def discovery(track, industry="All"):
     """Links to search pages, NOT evidence of individual open vacancies."""
     words = TRACK_WORDS.get(track) or ["graduate trainee","data analyst","it support","procurement"]
     out = []
     for word in words[:3]:
+        if industry != "All": word += " " + INDUSTRY_WORDS[industry][0]
         out.append(("Jobberman",f"https://www.jobberman.com/jobs?search={quote_plus(word)}"))
         out.append(("LinkedIn Jobs",f"https://www.linkedin.com/jobs/search/?keywords={quote_plus(word)}&location=Nigeria"))
     return out

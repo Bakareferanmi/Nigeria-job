@@ -1,0 +1,83 @@
+{
+  "Education & EdTech": [
+    "edtech",
+    "education / teaching",
+    "educational technology",
+    "educational services",
+    "school",
+    "university",
+    "e-learning",
+    "elearning",
+    "learning management system",
+    "digital learning",
+    "student management"
+  ],
+  "Healthcare & HealthTech": [
+    "healthcare",
+    "healthtech",
+    "hospital",
+    "clinic",
+    "medical",
+    "patient management",
+    "electronic health record"
+  ],
+  "Logistics & Supply Chain": [
+    "logistics",
+    "warehousing",
+    "warehouse",
+    "freight",
+    "fleet management",
+    "supply chain",
+    "transportation",
+    "ride-hailing"
+  ],
+  "Manufacturing & Industrial Services": [
+    "manufacturing",
+    "industrial automation",
+    "factory",
+    "industrial services",
+    "production plant",
+    "equipment maintenance"
+  ],
+  "Energy & Utilities": [
+    "solar",
+    "renewable energy",
+    "utilities",
+    "electricity",
+    "power distribution",
+    "energy management",
+    "metering"
+  ],
+  "Agriculture & Food Processing": [
+    "agriculture",
+    "agribusiness",
+    "agritech",
+    "food processing",
+    "agro-allied",
+    "farming",
+    "food production"
+  ],
+  "Property & Facilities": [
+    "property management",
+    "facilities management",
+    "facility management",
+    "real estate",
+    "proptech",
+    "building services"
+  ],
+  "Insurance & Pensions": [
+    "insurance",
+    "insurtech",
+    "pension",
+    "pensions",
+    "underwriting"
+  ],
+  "Nonprofit & Development": [
+    "nonprofit",
+    "non-profit",
+    "ngo",
+    "humanitarian",
+    "international development",
+    "development organization"
+  ]
+}

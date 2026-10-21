@@ -11,3 +11,9 @@ Recorded 21 October 2026 from Feranmi's explicit instructions.
 - Speed up application research with publicly published application/recruitment contacts, showing the source. Do not infer private emails or claim an address belongs to a named recruiter without evidence.
 
 These are repository project notes. The hosted browser tracker and CLI database remain independent.
+
+
+Latest additions requested by Feranmi:
+- Add the third, fourth and fifth recommended priorities: Website Administrator, Product Support Associate, and EdTech Support Assistant.
+- Explore less obvious sectors alongside mainstream technology employers, across Nigeria-eligible remote and Nigerian local work.
+- Industry focuses are suggestions based on skill overlap, not claims of low competition or guaranteed eligibility. Preserve the approved design.

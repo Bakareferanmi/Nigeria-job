@@ -18,11 +18,16 @@ export const MODES=['All','On-site','Hybrid','Remote','Unspecified'];
 
 export const safeUrl=v=>{try{const u=new URL(v);return u.protocol==='https:'?u.href:''}catch{return ''}};
 export function normalize(j){return {...j,title:clean(j.title),company:clean(j.company)||'Unspecified',url:safeUrl(j.url),location:clean(j.location),description:clean(j.description).slice(0,12000),salary:clean(j.salary),published:String(j.published||''),workMode:j.workMode||(j.remote?'Remote':workMode(j.location||'')),careerLevel:careerLevel(j),contacts:extractContacts(j.description||'',safeUrl(j.url))};}
+export function industryTags(j,config){
+ const body=String(j.description||'').slice(0,1800).replace(/health insurance|medical insurance|life insurance|pension contributions|pension scheme|university degree|high school|secondary school/gi,' ');
+ const text=clean([j.industry||'',j.title||'',j.company||'',body].join(' '));
+ return Object.entries(config.industries||{}).filter(([,words])=>words.some(word=>new RegExp('(?<!\\w)'+quoteRE(word)+'(?!\\w)','i').test(text))).map(([name])=>name);
+}
 export function match(j,config){
  if(!j.title||!j.url||careerLevel(j)==='Senior')return null;
  if(!j.remote&&!inNigeria(j.location,config))return null;
  if(j.remote&&!(j.eligibility==='yes'||j.eligibility==='likely'||inNigeria(j.location,config)||/\b(worldwide|anywhere|global)\b/i.test(j.location)))return null;
- const tracks=Object.entries(config.tracks).filter(([,words])=>words.some(w=>j.title.toLowerCase().includes(w))).map(([t])=>t);
+ const tracks=Object.entries(config.tracks).filter(([name,words])=>words.some(w=>j.title.toLowerCase().includes(w))&&!(name==='EdTech Support'&&/loan management/i.test(j.title+' '+j.description)&&!/education|learning management|school/i.test(j.title))).map(([t])=>t);
  if(!tracks.length)return null;
  const text=(j.title+' '+j.description).toLowerCase();
  const skills=config.skills.filter(s=>new RegExp('(?<!\\w)'+s.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?!\\w)').test(text));
@@ -30,7 +35,7 @@ export function match(j,config){
  if(years.length&&Math.min(...years)>=4)return null;
  let score=35+Math.min(15,tracks.length*5)+(ENTRY.test(j.title)?22:0)-(SENIOR.test(j.title)?35:0)+Math.min(15,skills.length*3)+(j.eligibility==='yes'?8:0)+(/lagos/i.test(j.location)?5:0);
  if(years.length)score+=Math.min(...years)>=4?-20:Math.min(...years)<=2?8:0;
- return {...j,tracks,skills,score:Math.max(0,Math.min(100,score))};
+ return {...j,tracks,skills,industryTags:industryTags(j,config),score:Math.max(0,Math.min(100,score))};
 }
 async function json(url){const r=await fetch(url,{headers:{'User-Agent':'NigeriaJobHunter/2.0','Accept':'application/json'},signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('HTTP '+r.status);return r.json();}
 const salary=j=>j.salary||((j.salaryMin||j.salaryMax||j.minSalary||j.maxSalary)?[j.salaryCurrency||j.currency||'',j.salaryMin||j.minSalary||'',j.salaryMax||j.maxSalary?'– '+(j.salaryMax||j.maxSalary):''].join(' '):'');
@@ -56,7 +61,7 @@ export function makeWorker(page,config){return{async fetch(request){const url=ne
    if(!title||title.length>200||!company||company.length>150)return Response.json({error:'A job title and company are required.'},{status:400,headers});
    try{return Response.json({contacts:await lookupContacts(target,title,company)},{headers:{...headers,'Cache-Control':'no-store'}})}catch(e){return Response.json({error:e.message},{status:400,headers})}
  }
- if(url.pathname==='/api/config')return Response.json({tracks:Object.keys(config.tracks),skills:config.skills,levels:LEVELS,workModes:MODES,nigeriaTerms:config.nigeriaTerms},{headers});
+ if(url.pathname==='/api/config')return Response.json({tracks:Object.keys(config.tracks),skills:config.skills,levels:LEVELS,workModes:MODES,nigeriaTerms:config.nigeriaTerms,industries:config.industries},{headers});
  if(url.pathname!=='/')return new Response('Not found',{status:404,headers});
  return new Response(page,{headers:{...headers,'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"}});
 }}}
@@ -70,7 +75,7 @@ export function parseLocalFeed(xml){
   const expiry=Date.parse(field('expiryDate'));if(Number.isFinite(expiry)&&expiry<Date.now())continue;
   const description=field('description');const arrangement=clean(description).match(/(?:job type|work (?:mode|arrangement)|working arrangement)\s*:?\s*(remote|hybrid|on[- ]?site)|\b(hybrid working|work remotely|fully remote|on[- ]site role)\b/i);
   const mode=arrangement?workMode(arrangement[0]):'Unspecified';
-  out.push({title,company,url:field('link'),location:field('location'),description,published:field('pubDate'),remote:mode==='Remote',eligibility:'yes',workMode:mode});
+  out.push({title,company,url:field('link'),location:field('location'),description,published:field('pubDate'),remote:mode==='Remote',eligibility:'yes',workMode:mode,industry:field('industry')});
  }
  return out;
 }

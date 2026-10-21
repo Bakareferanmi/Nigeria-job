@@ -1,7 +1,7 @@
 """JobHunter: interactive and scriptable Nigeria / remote job search."""
 import argparse
 from profile import PROFILE
-from hunter import search, saved, set_status, export_csv, discovery, STATUSES, LEVELS, WORK_MODES, job_contacts
+from hunter import search, saved, set_status, export_csv, discovery, STATUSES, LEVELS, WORK_MODES, job_contacts, INDUSTRIES
 
 REGIONS = ("Nigeria", "Lagos", "Remote", "Nigeria + Remote")
 TRACKS = PROFILE["career_tracks"]
@@ -17,6 +17,11 @@ def display(jobs, limit=30):
         if job.get("published"): print(f"   Date: {job['published']}")
         if job.get("salary"): print(f"   Salary: {job['salary']}")
         print(f"   Level: {job.get('level') or 'Unspecified'} | Work mode: {job.get('work_mode','Unspecified')}")
+        tags = job.get("industry_tags", [])
+        if isinstance(tags, str):
+            import json
+            tags = json.loads(tags)
+        if tags: print("   Industry clues: " + ", ".join(tags))
         eligibility = job.get('eligibility','unknown') if job['remote'] else 'Not a remote listing'
         print(f"   Remote eligibility: {eligibility} | Status: {job.get('status','new')}")
         print(f"   Apply: {job['url']}")
@@ -41,15 +46,15 @@ def select(title, choices, default=1):
     print("Invalid choice.")
     return None
 
-def run_search(region,track,limit,level="Early career",mode="All"):
-    print(f"\nSearching {region} / {track}")
-    matches, errors = search(region,track,level,mode)
+def run_search(region,track,limit,level="Early career",mode="All",industry="All"):
+    print(f"\nSearching {region} / {track} / Industry focus: {industry}")
+    matches, errors = search(region,track,level,mode,industry)
     print(f"\nMatched vacancies: {len(matches)}")
     for error in errors: print(f"Source warning: {error}")
     display(matches,limit)
     if region in ("Nigeria","Lagos","Nigeria + Remote"):
         print("\nExtra Nigerian discovery links (search pages, NOT verified job vacancies):")
-        for source,url in discovery(track): print(f"  {source}: {url}")
+        for source,url in discovery(track,industry): print(f"  {source}: {url}")
         print("Nigerian vacancies: MyJobMag latest 100 feed entries + configured employer boards.")
 
 def interactive():
@@ -63,7 +68,8 @@ def interactive():
             track = select("Career track",["All"]+TRACKS)
             level = select("Career level",list(LEVELS))
             mode = select("Work arrangement",list(WORK_MODES))
-            if region and track and level and mode: run_search(region,track,30,level,mode)
+            industry = select("Industry focus (listing keyword clues)",list(INDUSTRIES))
+            if region and track and level and mode and industry: run_search(region,track,30,level,mode,industry)
         elif cmd == "2": display(saved(),100)
         elif cmd == "3":
             try:
@@ -107,6 +113,7 @@ def main():
     s.add_argument("--limit",type=int,default=30)
     s.add_argument("--level",choices=LEVELS,default="Early career")
     s.add_argument("--work-mode",choices=WORK_MODES,default="All")
+    s.add_argument("--industry",choices=INDUSTRIES,default="All",help="Filter listing keyword clues; employer sector is not verified")
     contacts = sub.add_parser("contacts",help="Show published application emails for a saved job")
     contacts.add_argument("id",type=int)
     contacts.add_argument("--fetch",action="store_true",help="Read supported public listing for contact details")
@@ -117,7 +124,7 @@ def main():
     ex = sub.add_parser("export",help="Export tracked jobs")
     ex.add_argument("--file",default="jobhunter_export.csv")
     args=parser.parse_args()
-    if args.command=="search": run_search(args.region,args.track,max(1,args.limit),args.level,args.work_mode)
+    if args.command=="search": run_search(args.region,args.track,max(1,args.limit),args.level,args.work_mode,args.industry)
     elif args.command=="contacts": show_contacts(args.id,args.fetch)
     elif args.command=="list": display(saved(),100)
     elif args.command=="status": print("Updated." if set_status(args.id,args.value) else "Job ID not found.")

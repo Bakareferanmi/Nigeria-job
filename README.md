@@ -147,3 +147,25 @@ Cloudflare may ask you to choose a unique Worker name; change `name` in `web/wra
 Source: [Cloudflare Workers Builds configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/).
 
 The independently hosted version uses the access rules you configure in your Cloudflare account. Tracking stays in each visitor's browser; it does not sync across devices or with the Python SQLite database. Use JSON backups to move website tracking data. The website's API reads public job listings and does not send applications or emails.
+
+
+## Website, product and EdTech support roles; industry focus
+
+New career tracks:
+- **Website Administration**: Website Administrator, Webmaster, CMS Assistant, Web Content Officer, WordPress Administrator and related titles.
+- **Product Support**: Product Support Associate, Application Support, Software Support, Platform Support and related titles.
+- **EdTech Support**: EdTech Support Assistant, LMS Administrator, Learning Platform Support, CBT Support and related titles. Loan-management LMS roles are not treated as education roles merely because they use the same abbreviation.
+
+The website and CLI now offer nine industry focuses: Education & EdTech; Healthcare & HealthTech; Logistics & Supply Chain; Manufacturing & Industrial Services; Energy & Utilities; Agriculture & Food Processing; Property & Facilities; Insurance & Pensions; Nonprofit & Development.
+
+Industry focuses are keyword clues from the source industry field, job title, company and the first 1,800 description characters. They are **not verified employer classifications**, can overlap, and can miss employers described differently. Common insurance/pension benefit and qualification phrases are excluded from description matching. `All` retains unclassified jobs. Existing source coverage remains bounded; adding a focus does not add a new employer feed or establish that a vacancy is open. Board discovery links combine role and sector terms to broaden manual searches.
+
+Use the website's **Career track**, **Industry focus**, **Location** and **Work arrangement** controls together. Keep Location at `Nigeria + Remote` to cover both, or choose `Nigeria`/`Lagos` for local roles. On-site/Hybrid filters require an explicit arrangement; many local listings are Unspecified.
+
+```bash
+python main.py search --track "Website Administration" --industry "Healthcare & HealthTech"
+python main.py search --track "Product Support" --region Remote --industry "Logistics & Supply Chain"
+python main.py search --track "EdTech Support" --region Nigeria --industry "Education & EdTech"
+```
+
+CLI searches store industry clues in additive SQLite fields and include them in CSV exports. Website backups/CSV preserve industry information, and older browser records receive keyword clues when configuration loads. Edit `industry_focus.json` for CLI sector keywords and keep the `industries` snapshot in `web/config.json` aligned when changing them.
